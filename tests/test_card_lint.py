@@ -119,7 +119,7 @@ class CardLintTest(unittest.TestCase):
         card = replace(
             GOOD_CARD,
             "1. `grep -q '^\\[x\\]' todos.txt` -> Expected exit 0\n\n",
-            "1. `grep -q '^\\[x\\]' todos.txt` -> 期望退出码 0\n\n",
+            "1. `grep -q '^\\[x\\]' todos.txt` -> 结果为期望退出码 0\n\n",
         )
         self.assertEqual((0, []), lint_text(card))
 
@@ -141,6 +141,8 @@ class CardLintTest(unittest.TestCase):
             text=True,
         )
         self.assertEqual(2, result.returncode)
+        # "Could not check" is reported on stderr, never as a card violation.
+        self.assertTrue(result.stderr.strip())
 
     def test_missing_file_exit2(self):
         result = subprocess.run(

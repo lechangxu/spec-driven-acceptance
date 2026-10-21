@@ -25,9 +25,10 @@ COMMAND_RE = re.compile(r"`[^`]+`")
 # "expected" or "期望" as a whole word. Both boundaries matter: without the left
 # one "unexpected" counts as an expectation and a criterion saying "unexpected
 # output" passes the check it should fail; without the right one "expectedly"
-# does the same. The right boundary is ASCII-only on purpose — CJK characters
-# are \w, so a blanket (?!\w) would reject "期望退出码".
-EXPECTED_RE = re.compile(r"(?i)(?<!\w)(?:expected(?![a-z])|期望)")
+# does the same. The boundaries are ASCII-only and scoped to the English branch
+# on purpose — CJK characters are \w, so a blanket \w boundary would reject
+# "期望退出码" and even "结果为期望".
+EXPECTED_RE = re.compile(r"(?i)(?:(?<!\w)expected(?![a-z])|期望)")
 
 
 def _sections(text):
