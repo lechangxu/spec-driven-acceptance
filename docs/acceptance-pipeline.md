@@ -80,8 +80,8 @@ correlation, it does not remove it.
 **Guarantees:** the pipeline's own errors are counted, in both directions.
 **Cannot catch:** a metric that quietly stopped measuring what it names.
 **Goes back to:** earlier layers, usually the card schema. Defects escaping one
-layer mean that layer's criteria are too weak. See [misjudgment-monitoring.md](misjudgment-
-monitoring.md).
+layer mean that layer's criteria are too weak. See
+[misjudgment-monitoring.md](misjudgment-monitoring.md).
 
 ## The whole thing as an eval harness
 

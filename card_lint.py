@@ -18,7 +18,10 @@ HEADING_RE = re.compile(r"^#{1,6}\s+(.+?)\s*$")
 CRITERION_RE = re.compile(r"^(\d+)\.\s+(.*)$")
 ITEM_RE = re.compile(r"^\s*(?:[-*+]|\d+\.)\s+\S")
 COMMAND_RE = re.compile(r"`[^`]+`")
-EXPECTED_RE = re.compile(r"expected", re.IGNORECASE)
+# "expected" or "期望" as a whole word. The leading boundary matters: without it
+# "unexpected" would count as an expectation, and a criterion saying
+# "unexpected output" would pass the check it should fail.
+EXPECTED_RE = re.compile(r"(?i)(?<!\w)(?:expected|期望)")
 
 
 def _sections(text):

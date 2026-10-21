@@ -2,6 +2,8 @@
 
 **Write the spec first, then let a machine decide whether the work is done.**
 
+([中文版本](README.zh-CN.md))
+
 Most tasks handed to an AI coding agent fail in the same place: nobody agreed in advance what
 "finished" would look like, so the agent reports success and a human re-reads the diff hoping to
 spot trouble. This repository is the written half of a discipline that takes the decision out of
@@ -59,7 +61,8 @@ Shape it enforces:
 
 - the six sections `Goal`, `Decisions`, `Spec`, `Risks`, `Acceptance`, `Boundaries`;
 - at least two acceptance criteria;
-- a backticked command and an `Expected` note on every criterion;
+- a backticked command and an `Expected` (or `期望`) note on every criterion —
+  the word has to stand alone, so "unexpected output" does not count;
 - at least one entry under `Risks`.
 
 It deliberately does not judge whether the command proves the claim. That is a human decision, made

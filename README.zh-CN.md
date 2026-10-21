@@ -21,8 +21,9 @@
 5. **独立评审**——评审者没写过这段代码，也没被要求友善。
 6. **反馈度量**——两类错误都要计数，管线本身才可调。
 
-完整走查（含数据流图）见 [docs/acceptance-pipeline.md](docs/acceptance-pipeline.md)； 失效面另见 [评审独立性](docs/judge-
-independence.md) 与 [误判率监控](docs/misjudgment-monitoring.md)。
+完整走查（含数据流图）见 [docs/acceptance-pipeline.md](docs/acceptance-pipeline.md)。
+失效面另见 [评审独立性](docs/judge-independence.md) 与
+[误判率监控](docs/misjudgment-monitoring.md)。
 
 ## 快速开始
 
@@ -35,7 +36,7 @@ python3 card_lint.py examples/task-card.example.md
 可机械验收时打印 `OK` 并 exit 0；删一节或让某条判据丢掉命令就 exit 1 并点名； 文件读不到或参数不对则 exit 2——「没法检查」≠「检查过且没问题」。
 
 它强制的形状：六节 `Goal` / `Decisions` / `Spec` / `Risks` / `Acceptance` / `Boundaries`； 验收判据 ≥2
-条；每条判据同时含反引号命令与 `Expected`；`Risks` ≥1 条。
+条；每条判据同时含反引号命令与 `Expected`（或 `期望`，须独立成词—— `unexpected` 不算）；`Risks` ≥1 条。
 
 它故意**不**判断这条命令是否真能证明那个主张——那是写卡时人做一次的决定。
 

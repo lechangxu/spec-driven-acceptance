@@ -32,7 +32,7 @@ open items can read the three that matter right now.
 
 1. `pytest tests/test_list.py -q` -> Expected exit 0, all tests pass
 2. `todo list > /tmp/now.txt && diff -u tests/golden_list.txt /tmp/now.txt` -> Expected no diff
-3. `todo list --tag work --json > /tmp/j.json && python3 -c "import json,sys; sys.exit(len(json.load(open('/tmp/j.json'))) != 2)"` -> Expected exit 0
+3. `todo list --tag work > /tmp/p.txt && todo list --tag work --json > /tmp/j.json && test "$(python3 -c "import json; print(len(json.load(open('/tmp/j.json'))))")" -eq "$(wc -l < /tmp/p.txt)"` -> Expected exit 0
 4. `todo list --tag nosuchtag > /tmp/empty.txt; test $? -eq 0 && test ! -s /tmp/empty.txt` -> Expected exit 0
 
 ## Boundaries

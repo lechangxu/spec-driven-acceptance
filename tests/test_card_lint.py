@@ -80,6 +80,25 @@ class CardLintTest(unittest.TestCase):
         self.assertTrue(
             any("missing Expected/expected" in p for p in problems), problems
         )
+        # "unexpected" is not an expectation marker: it must still be a violation.
+        card = replace(
+            GOOD_CARD,
+            "1. `grep -q '^\\[x\\]' todos.txt` -> Expected exit 0\n\n",
+            "1. `grep -q '^\\[x\\]' todos.txt` -> unexpected output is a failure\n\n",
+        )
+        code, problems = lint_text(card)
+        self.assertEqual(1, code)
+        self.assertTrue(
+            any("criterion 1: missing Expected/expected" in p for p in problems),
+            problems,
+        )
+        # A Chinese card may write the marker as 期望.
+        card = replace(
+            GOOD_CARD,
+            "1. `grep -q '^\\[x\\]' todos.txt` -> Expected exit 0\n\n",
+            "1. `grep -q '^\\[x\\]' todos.txt` -> 期望退出码 0\n\n",
+        )
+        self.assertEqual((0, []), lint_text(card))
 
     def test_missing_risks(self):
         card = replace(
