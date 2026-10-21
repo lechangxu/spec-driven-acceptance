@@ -79,6 +79,18 @@ class CardLintTest(unittest.TestCase):
         code, problems = lint_text(card)
         self.assertEqual(1, code)
         self.assertTrue(any("no backticked command" in p for p in problems), problems)
+        # A subsection does not close the section: criteria written under it
+        # are still Acceptance criteria and still get checked.
+        card = replace(
+            GOOD_CARD,
+            "## Boundaries",
+            "### Extra\n\n- the list still prints -> Expected exit 0\n\n## Boundaries",
+        )
+        code, problems = lint_text(card)
+        self.assertEqual(1, code)
+        self.assertTrue(
+            any("criterion 3: no backticked command" in p for p in problems), problems
+        )
 
     def test_missing_expected(self):
         card = replace(

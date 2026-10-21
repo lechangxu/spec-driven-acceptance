@@ -32,14 +32,29 @@ EXPECTED_RE = re.compile(r"(?i)(?:(?<!\w)expected(?![a-z])|期望)")
 
 
 def _sections(text):
-    """Return {lowercased heading: [body lines]} for a markdown document."""
+    """Return {lowercased heading: [body lines]} for a markdown document.
+
+    A deeper heading does not end the section that contains it. An "Extra"
+    subsection under Acceptance is still Acceptance, and a criterion written
+    there has to be checked like any other — otherwise appending one heading
+    would retire the checks for everything below it.
+    """
     sections = {}
     current = None
+    depth = 0
     for line in text.splitlines():
         match = HEADING_RE.match(line)
         if match:
-            current = match.group(1).strip().lower()
-            sections.setdefault(current, [])
+            # A document title (h1) is not a parent of the sections below it,
+            # so levels are counted from h2 down: "## Goal" closes "# Title",
+            # while "### Extra" stays inside "## Acceptance".
+            level = max(2, len(line) - len(line.lstrip("#")))
+            if current is None or level <= depth:
+                current = match.group(1).strip().lower()
+                depth = level
+                sections.setdefault(current, [])
+                continue
+            sections[current].append(line)
             continue
         if current is not None:
             sections[current].append(line)
