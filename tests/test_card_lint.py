@@ -69,6 +69,16 @@ class CardLintTest(unittest.TestCase):
         code, problems = lint_text(card)
         self.assertEqual(1, code)
         self.assertTrue(any("no backticked command" in p for p in problems), problems)
+        # A bulleted criterion is a criterion too: it cannot slip past the checks.
+        card = replace(
+            GOOD_CARD,
+            "2. `test -s todos.txt` -> Expected exit 0\n\n",
+            "2. `test -s todos.txt` -> Expected exit 0\n\n"
+            "- the list still prints -> Expected exit 0\n\n",
+        )
+        code, problems = lint_text(card)
+        self.assertEqual(1, code)
+        self.assertTrue(any("no backticked command" in p for p in problems), problems)
 
     def test_missing_expected(self):
         card = replace(

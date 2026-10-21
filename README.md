@@ -60,7 +60,9 @@ argument count exits 2: "could not check" must never be confused with "checked a
 Shape it enforces:
 
 - the six sections `Goal`, `Decisions`, `Spec`, `Risks`, `Acceptance`, `Boundaries`;
-- at least two acceptance criteria;
+- at least two acceptance criteria — a criterion is any list item under
+  `Acceptance`, numbered or bulleted, so a bullet cannot carry an unprovable
+  claim past the checks;
 - a backticked command and an `Expected` (or `期望`) note on every criterion —
   the word has to stand alone, so "unexpected output" does not count;
 - at least one entry under `Risks`.

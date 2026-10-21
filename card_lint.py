@@ -15,7 +15,11 @@ import sys
 REQUIRED_SECTIONS = ("Goal", "Decisions", "Spec", "Risks", "Acceptance", "Boundaries")
 
 HEADING_RE = re.compile(r"^#{1,6}\s+(.+?)\s*$")
-CRITERION_RE = re.compile(r"^(\d+)\.\s+(.*)$")
+# A criterion is any list item in the acceptance section, numbered or bulleted,
+# at any indent. Matching only top-level "N." items leaves a hole: a bullet
+# appended after two good criteria escapes the command/expectation checks while
+# the section still looks compliant.
+CRITERION_RE = re.compile(r"^\s*(?:\d+\.|[-*+])\s+(.*)$")
 ITEM_RE = re.compile(r"^\s*(?:[-*+]|\d+\.)\s+\S")
 COMMAND_RE = re.compile(r"`[^`]+`")
 # "expected" or "期望" as a whole word. Both boundaries matter: without the left
@@ -47,8 +51,8 @@ def _body(sections, name):
 
 
 def _criteria(acceptance_lines):
-    """Text of numbered criteria lines (top-level `N. ...`)."""
-    return [m.group(2) for m in map(CRITERION_RE.match, acceptance_lines) if m]
+    """Text of every list item in the acceptance section (`1. ...` or `- ...`)."""
+    return [m.group(1) for m in map(CRITERION_RE.match, acceptance_lines) if m]
 
 
 def _has_item(lines):
