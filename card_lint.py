@@ -18,10 +18,12 @@ HEADING_RE = re.compile(r"^#{1,6}\s+(.+?)\s*$")
 CRITERION_RE = re.compile(r"^(\d+)\.\s+(.*)$")
 ITEM_RE = re.compile(r"^\s*(?:[-*+]|\d+\.)\s+\S")
 COMMAND_RE = re.compile(r"`[^`]+`")
-# "expected" or "期望" as a whole word. The leading boundary matters: without it
-# "unexpected" would count as an expectation, and a criterion saying
-# "unexpected output" would pass the check it should fail.
-EXPECTED_RE = re.compile(r"(?i)(?<!\w)(?:expected|期望)")
+# "expected" or "期望" as a whole word. Both boundaries matter: without the left
+# one "unexpected" counts as an expectation and a criterion saying "unexpected
+# output" passes the check it should fail; without the right one "expectedly"
+# does the same. The right boundary is ASCII-only on purpose — CJK characters
+# are \w, so a blanket (?!\w) would reject "期望退出码".
+EXPECTED_RE = re.compile(r"(?i)(?<!\w)(?:expected(?![a-z])|期望)")
 
 
 def _sections(text):
@@ -92,7 +94,10 @@ def main(argv=None):
     try:
         with open(path, encoding="utf-8") as handle:
             text = handle.read()
-    except OSError as exc:
+    except (OSError, UnicodeDecodeError) as exc:
+        # A file we cannot decode is a file we cannot check: that is exit 2,
+        # not a violation. Letting the UnicodeDecodeError escape would report
+        # exit 1 and claim the card is non-compliant when it was never read.
         sys.stderr.write("cannot read %s: %s\n" % (path, exc))
         return 2
 

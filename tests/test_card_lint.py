@@ -7,6 +7,7 @@ through the command line, because exit codes live in `main()`.
 import os
 import subprocess
 import sys
+import tempfile
 import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -92,6 +93,18 @@ class CardLintTest(unittest.TestCase):
             any("criterion 1: missing Expected/expected" in p for p in problems),
             problems,
         )
+        # ... nor is "expectedly": the marker must end as a word too.
+        card = replace(
+            GOOD_CARD,
+            "1. `grep -q '^\\[x\\]' todos.txt` -> Expected exit 0\n\n",
+            "1. `grep -q '^\\[x\\]' todos.txt` -> it expectedly fails\n\n",
+        )
+        code, problems = lint_text(card)
+        self.assertEqual(1, code)
+        self.assertTrue(
+            any("criterion 1: missing Expected/expected" in p for p in problems),
+            problems,
+        )
         # A Chinese card may write the marker as 期望.
         card = replace(
             GOOD_CARD,
@@ -127,6 +140,19 @@ class CardLintTest(unittest.TestCase):
             text=True,
         )
         self.assertEqual(2, result.returncode)
+        # A file that exists but is not UTF-8 is equally unreadable: still 2.
+        directory = tempfile.mkdtemp(prefix="card_lint_")
+        undecodable = os.path.join(directory, "latin1.md")
+        with open(undecodable, "wb") as handle:
+            handle.write("## Goal\n\ncaf\xe9\n".encode("latin-1"))
+        result = subprocess.run(
+            [sys.executable, "card_lint.py", undecodable],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(2, result.returncode)
+        self.assertTrue(result.stderr.strip())
 
 
 if __name__ == "__main__":

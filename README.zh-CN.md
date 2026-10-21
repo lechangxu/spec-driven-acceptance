@@ -33,7 +33,7 @@
 python3 card_lint.py examples/task-card.example.md
 ```
 
-可机械验收时打印 `OK` 并 exit 0；删一节或让某条判据丢掉命令就 exit 1 并点名； 文件读不到或参数不对则 exit 2——「没法检查」≠「检查过且没问题」。
+可机械验收时打印 `OK` 并 exit 0；删一节或让某条判据丢掉命令就 exit 1 并点名； 文件读不到、不是 UTF-8 或参数不对则 exit 2——「没法检查」≠「检查过且没问题」。
 
 它强制的形状：六节 `Goal` / `Decisions` / `Spec` / `Risks` / `Acceptance` / `Boundaries`； 验收判据 ≥2
 条；每条判据同时含反引号命令与 `Expected`（或 `期望`，须独立成词—— `unexpected` 不算）；`Risks` ≥1 条。
