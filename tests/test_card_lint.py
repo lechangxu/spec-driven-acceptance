@@ -141,16 +141,16 @@ class CardLintTest(unittest.TestCase):
         )
         self.assertEqual(2, result.returncode)
         # A file that exists but is not UTF-8 is equally unreadable: still 2.
-        directory = tempfile.mkdtemp(prefix="card_lint_")
-        undecodable = os.path.join(directory, "latin1.md")
-        with open(undecodable, "wb") as handle:
-            handle.write("## Goal\n\ncaf\xe9\n".encode("latin-1"))
-        result = subprocess.run(
-            [sys.executable, "card_lint.py", undecodable],
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-        )
+        with tempfile.TemporaryDirectory(prefix="card_lint_") as directory:
+            undecodable = os.path.join(directory, "latin1.md")
+            with open(undecodable, "wb") as handle:
+                handle.write("## Goal\n\ncaf\xe9\n".encode("latin-1"))
+            result = subprocess.run(
+                [sys.executable, "card_lint.py", undecodable],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
         self.assertEqual(2, result.returncode)
         self.assertTrue(result.stderr.strip())
 
