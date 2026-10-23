@@ -1,4 +1,5 @@
 # spec-driven-acceptance（中文镜像）
+[![tests](https://github.com/lechangxu/spec-driven-acceptance/actions/workflows/tests.yml/badge.svg)](https://github.com/lechangxu/spec-driven-acceptance/actions/workflows/tests.yml)
 
 **先写规格，再让机器判定活干完没有。**（[English](README.md)）
 
@@ -49,6 +50,58 @@ python3 -m unittest discover -s tests -v
 ```
 
 除标准库外无依赖，Python 3.9+。
+
+## 技术栈
+
+| 层 | 是什么 |
+| :--- | :--- |
+| 语言与运行环境 | Python 3.9+，仅标准库，无第三方依赖 |
+| 测试 | unittest，8 条：`python3 -m unittest discover -s tests -v` |
+| CI | GitHub Actions，Python 3.12，工作流 `.github/workflows/tests.yml` |
+
+## 示例输出
+
+示例卡（合格）跑校验器：
+
+```bash
+python3 card_lint.py examples/task-card.example.md
+```
+
+```text
+OK
+```
+
+`exit 0`
+
+坏卡——先造一个只有 `# demo`、一个空行和 `## Goal` 的文件，再跑校验器：
+
+```bash
+printf '# demo\n\n## Goal\n' > /tmp/bad-card.md
+python3 card_lint.py /tmp/bad-card.md
+```
+
+```
+missing section: Decisions
+missing section: Spec
+missing section: Risks
+missing section: Acceptance
+missing section: Boundaries
+Acceptance needs at least 2 criteria (found 0)
+```
+
+`exit 1`
+
+完全不给参数——「没法检查」而不是「检查过且没问题」：
+
+```bash
+python3 card_lint.py
+```
+
+```text
+usage: card_lint.py <card.md>
+```
+
+`exit 2`
 
 ## 这不是什么
 

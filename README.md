@@ -1,4 +1,5 @@
 # spec-driven-acceptance
+[![tests](https://github.com/lechangxu/spec-driven-acceptance/actions/workflows/tests.yml/badge.svg)](https://github.com/lechangxu/spec-driven-acceptance/actions/workflows/tests.yml)
 
 **Write the spec first, then let a machine decide whether the work is done.**
 
@@ -78,6 +79,58 @@ python3 -m unittest discover -s tests -v
 ```
 
 No dependencies beyond the standard library, Python 3.9+.
+
+## Tech stack
+
+| Layer | What it is |
+| :--- | :--- |
+| Language & runtime | Python 3.9+, standard library only — no third-party dependencies |
+| Tests | unittest, 8 test cases: `python3 -m unittest discover -s tests -v` |
+| CI | GitHub Actions, Python 3.12, workflow `.github/workflows/tests.yml` |
+
+## Example output
+
+The linter on the worked example — a card that passes:
+
+```bash
+python3 card_lint.py examples/task-card.example.md
+```
+
+```text
+OK
+```
+
+`exit 0`
+
+A broken card — reproduce it with a file whose whole content is `# demo`, a blank line, and `## Goal`:
+
+```bash
+printf '# demo\n\n## Goal\n' > /tmp/bad-card.md
+python3 card_lint.py /tmp/bad-card.md
+```
+
+```
+missing section: Decisions
+missing section: Spec
+missing section: Risks
+missing section: Acceptance
+missing section: Boundaries
+Acceptance needs at least 2 criteria (found 0)
+```
+
+`exit 1`
+
+No argument at all — "could not check", not "checked and fine":
+
+```bash
+python3 card_lint.py
+```
+
+```text
+usage: card_lint.py <card.md>
+```
+
+`exit 2`
 
 ## What this is not
 
